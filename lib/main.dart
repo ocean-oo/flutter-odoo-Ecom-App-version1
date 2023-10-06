@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // import 'package:odoo_api/odoo_api.dart';
 // import 'package:odoo_api/odoo_api_connector.dart';
 // import 'package:odoo_api/odoo_user_response.dart';
-import 'package:task/image.dart';
+// import 'package:task/image.dart';
 import 'dart:io';
 import 'package:odoo_rpc/odoo_rpc.dart';
 
@@ -45,10 +45,8 @@ class Debouncer {
   }
 
   run(VoidCallback action) {
-    if (null != _timer) {
-      _timer.cancel();
-    }
-    _timer = Timer(Duration(milliseconds: milliseconds), action);
+    _timer.cancel();
+      _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }
 
@@ -63,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late OdooSession prev_session ;
 
-  late OdooClient authRPC = OdooClient("https://6e53-160-177-120-51.ngrok-free.app"); //http://192.168.1.13:8069
+  late OdooClient authRPC = OdooClient("https://58d9-41-142-102-210.ngrok-free.app"); //http://192.168.1.13:8069
 
   @override
   void initState() {
@@ -107,8 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  Future<dynamic> fetchContacts() {
-    var result =
+  Future<dynamic> fetchContacts() async {
+    var result = await
     authRPC.callKw({
       'model': 'res.partner',
       'method': 'search_read',
@@ -120,48 +118,76 @@ class _MyHomePageState extends State<MyHomePage> {
         'limit': 80,
       },
     });
-    debugPrint("result get contact ");
-    debugPrint(result.toString());
+    return result;
+  }
+
+  Future<dynamic> getOrders() async {
+
+    List<String> ordersFields = [ 'id', 'name', 'date_order', 'config_id','partner_id','lines', 'amount_total'];
+
+    var result =
+    await authRPC.callRPC("/web/dataset/search_read",'',{
+      "model":"pos.order",
+      "fields": ordersFields,
+      'domain': [],
+      'limit': 80,
+    });
     return result;
   }
 
 
+
+  Future<dynamic> fetchOrders_old() async {
+    print("-- test get orders--");
+    var result = await authRPC.callKw({
+      'model': 'sale.order', // Specify the Odoo model for orders
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'context': {'bin_size': true},
+        'domain': [], // You can add a domain filter if needed
+        'fields': [
+          'id',
+          'name',  // Order name
+          'date_order',  // Order date
+          'partner_id',  // Customer (partner) associated with the order
+          'amount_total',  // Total amount of the order
+          // Add other fields you need here
+        ],
+        'limit': 80, // Limit the number of records returned
+      },
+    });
+    return result;
+  }
+
+
+
+
+
   Future<List>? _getOrders() async {
     var productsFields = ["id","display_name","name","image_128","qty_available","list_price","standard_price","currency_id","uom_id","display_name"];
-    print("----test get product ---");
-
     var result =
         await authRPC.callRPC("/web/dataset/search_read",'',{
           "model":"product.template",
           "fields":productsFields,
         });
-    print("result :");
-    log(result.toString());
-    debugPrint("---140");
-
-
-
     if (result.hashCode > 0) { //if negative , error
-      print("Successful");
       setState(() {
         check = false;
-
         data = result['records'];
         productsList = data;
-        print("CCC---150");
-        // print(listdata);
-        print(productsList.length);
+        print("Products length : ${productsList.length}");
       });
     }
     else {
       print("Error in getting products data");}
-
     return data; //+
   }
 
   void sessionChanged(OdooSession sessionId) async {
     print('-------\n'
-        'We got new session ID: ${sessionId.id}'
+        'We got new session: ${sessionId}'
+        '\nWe got new session ID: ${sessionId.id}'
         '\n-------');
     prev_session = sessionId;
   }
@@ -173,7 +199,9 @@ class _MyHomePageState extends State<MyHomePage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHight = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: AppBar(
+        appBar:
+
+        AppBar(
           centerTitle: true,
           title: TextField(
             style: TextStyle(
@@ -222,8 +250,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           leading:
           ElevatedButton(
-            onPressed:() {
+            onPressed:() async {
               _getOrders();
+              print("-------- orders : --- "); //!
+              var orders = await getOrders();
+              print(orders); //!
+              print("------------\n\n"); //!
+
             },
             child:
             Icon(
@@ -240,10 +273,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     colors: <Color>[Colors.blue, Colors.blue])),
           ),
         ),
+
         body: check
             ? Center(
-                child: CircularProgressIndicator(),
-              )
+                child: CircularProgressIndicator(),)
             : productsList.length == 0
                 ? Center(
                     child: Text("No Data Found"),

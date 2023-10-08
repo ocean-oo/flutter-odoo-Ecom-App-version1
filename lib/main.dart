@@ -61,7 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late OdooSession prev_session ;
 
-  late OdooClient authRPC = OdooClient("https://58d9-41-142-102-210.ngrok-free.app"); //http://192.168.1.13:8069
+  var url = 'https://4cfb-160-177-217-141.ngrok-free.app';
+  late OdooClient authRPC = OdooClient(url); //http://192.168.1.13:8069
 
   @override
   void initState() {
@@ -133,6 +134,102 @@ class _MyHomePageState extends State<MyHomePage> {
       'limit': 80,
     });
     return result;
+  }
+
+
+  Future<Map<String, dynamic>?> createOrder(Map<String, Object> orderData) async {
+    Map<String, Object> orderData = {
+      "session_id": 1,
+      "company_id": 1,
+      "access_token": false,
+      "name": "Shop/000 test 3",
+      "pos_reference": "Order 00001-048-0003",
+      "date_order": "2023-10-08 12:48:01",
+      "user_id": 2, //
+      "config_id": 1,
+      "amount_return": 0.0,
+      "amount_paid": 400.0,
+      "amount_total": 200.0,
+      "amount_tax": 80.0,
+      "margin": 20.0,
+      "partner_id": false,
+      "pricelist_id": 1,
+      "currency_id": 109,
+      "note": "add some note here",
+      "is_total_cost_computed": true,
+      "lines": [],
+    };
+
+    var result = await authRPC.callRPC(
+      "/web/dataset/call_kw",
+      "",
+      {
+        "model": "pos.order",
+        "method": "create",
+        "args": [orderData],
+        "kwargs": {},
+      },
+    );
+
+    if (result['result'] != null) {
+      // Order creation was successful, and the result contains the created order data.
+      return result['result'];
+    } else {
+      // There was an error in creating the order.
+      print("Error in creating order: ${result['error']}");
+      return null;
+    }
+  }
+
+
+  Future<void> createOrderLines(List<Map<String, Object>> orderLines) async {
+    List<Map<String, Object>> orderLines = [
+      {
+        "order_id": 38,
+        "name": "test sale order 28+",
+        "full_product_name": "Office Chair II+1",
+        "product_id": 5,
+        "total_cost": 45.0,
+        "price_subtotal": 91.0,
+        "price_subtotal_incl": 81.0,
+        "price_unit": 60.0,
+        "qty": 2.0,
+        "product_uom_id": [3, "Units"],
+        "currency_id": [109, "MAD"],
+        "price_extra": 0.0,
+        "margin": 15.0,
+        "margin_percent": 0.21430000000000002
+      },
+      {
+        "order_id": 38,
+        "name": "test sale order 28+2",
+        "full_product_name": "Office Chair II+2",
+        "product_id": 5,
+        "total_cost": 45.0,
+        "price_subtotal": 91.0,
+        "price_subtotal_incl": 81.0,
+        "price_unit": 60.0,
+        "qty": 2.0,
+        "product_uom_id": [3, "Units"],
+        "currency_id": [109, "MAD"],
+        "price_extra": 0.0,
+        "margin": 15.0,
+        "margin_percent": 0.21430000000000002
+      }
+    ];
+
+    var result = await authRPC.callRPC("/web/dataset/call_kw", '', {
+      "model": "pos.order.line",
+      "method": "create",
+      "args": [orderLines],
+      "kwargs": {}
+    });
+
+    if (result != null && result.containsKey("result")) {
+      print("Order lines created successfully");
+    } else {
+      print("Error creating order lines");
+    }
   }
 
 
@@ -291,6 +388,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Card(
                               elevation: 2,
                               child: ListTile(
+                                onLongPress:(){
+
+                                  createOrder({});
+                                },
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[

@@ -1,16 +1,21 @@
-# task
+# Get Prodct + add an order on ERP odoo 16.0
 
 A new Flutter project.
 
-## Getting Started
+## list and search Products
 
-This project is a starting point for a Flutter application.
+<p align="center">
+<img src="https://github.com/tarikmsr/odoo_flutter_auth_get_product/assets/64175026/b0786a97-f2c1-4e2d-8099-f64ee669da1e"  width="350"  >
+<img src="https://github.com/tarikmsr/odoo_flutter_auth_get_product/assets/64175026/1d60d8b3-0cb7-4844-a1e1-f111576b2f9b"  width="350"  >
+</p>
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## choose and confirm order
+
+<p align="center">
+<img src="https://github.com/tarikmsr/odoo_flutter_auth_get_product/assets/64175026/9bfcfc9a-3977-478a-be78-b3d111f022cd"  width="350"  >
+<img src="https://github.com/tarikmsr/odoo_flutter_auth_get_product/assets/64175026/72778d70-9ff6-42e1-bc46-145e705d3d9d"  width="350"  >
+</p>
+
+

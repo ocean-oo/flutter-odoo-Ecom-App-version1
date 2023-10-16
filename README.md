@@ -1,6 +1,12 @@
 # Get Prodct + add an order on ERP odoo 16.0
 
-A new Flutter project.
+## Instructions: 
+
+
+1- change the odoo url in main page
+2- change the odoo credential in authToOdoo function in main page
+
+
 
 ## list and search Products
 

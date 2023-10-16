@@ -4,6 +4,7 @@
 
 
 1- change the odoo url in main page
+
 2- change the odoo credential in authToOdoo function in main page
 
 

@@ -1,5 +1,5 @@
 
-# Get Prodcts/  Authentification / Get user data / add an order on ERP odoo 16.0
+# Get Prodcts/  Authentification / Get user data / add an order on ERP odoo 16.0  using odoo_rpc package
 
 ## Instructions: 
 

@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> authToOdoo()async {
     try {
-      var session = await authRPC.authenticate('sodev', 'tarik.sodev@gmail.com', 'odoo@@16');
+      var session = await authRPC.authenticate('company_name', 'yourEmail@exemple.com', 'your_odoo_password');
       sessionChanged(session);
 
       if (session != null) { //!
